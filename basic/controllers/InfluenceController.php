@@ -25,9 +25,9 @@ class InfluenceController extends \yii\web\Controller
     {
         set_time_limit( 0 );
         
-        $locations = 1000;
-        $snapshots = 30;
-        $snapshotsDelta = 10;
+        $locations = 2;
+        $snapshots = 4;
+        $snapshotsDelta = 2;
         
         // \app\models\Influence::clearData();
         $res = \app\models\Influence::generateData( $locations, $snapshots, $snapshotsDelta );

@@ -31,17 +31,24 @@ class Influence extends Model
     */
     public static function generateData( $locations, $snapshots, $snapshotsDelta ){
         
+        $file = 'data.txt';
+        
         $res = [];
         $res['start'] = time();
         
         for( $i = 1; $i <= $locations; $i++ ){
+            
+            //$stringDat = "INSERT INTO "
+            
             $location = new \app\models\InLocations();
             $location->save();
             
             $id = $location->id;
             
             $subres = self::generateSnapshots( $id, $snapshots, $snapshotsDelta );
-            $res = array_merge( $res, $subres );
+            
+            unset( $location );
+            // $res = array_merge( $res, $subres );
             // $res['items'] = array_merge( $res, self::generateSnapshots( $id, $snapshots, $snapshotsDelta ) );
         }
 
@@ -80,7 +87,7 @@ class Influence extends Model
         foreach($daterange as $date){
             $dateString = $date->format("Y-m-d");
             
-            $res[ $owner_id ] += 1;
+            // $res[ $owner_id ] += 1;
             
             $snapshot = new \app\models\InSnapshots();
             $snapshot->location_id = $owner_id;
@@ -89,6 +96,8 @@ class Influence extends Model
             $snapshot->rating = rand( 0,  $ratingMax);
             
             $snapshot->save();
+            
+            unset( $snapshot );
             
         }
         
