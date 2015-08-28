@@ -20,17 +20,22 @@ class InfluenceController extends \yii\web\Controller
     /**
     * fill data
     * 
+    * LOAD DATA INFILE '/tmp/data_locations.txt' INTO TABLE in_locations
+    * 
     */
     public function actionFilldata()
     {
         set_time_limit( 0 );
         
-        $locations = 2;
+        // $locations = 100 * 1000;
+        $locations = 10;
+        
         $snapshots = 4;
         $snapshotsDelta = 2;
         
-        // \app\models\Influence::clearData();
-        $res = \app\models\Influence::generateData( $locations, $snapshots, $snapshotsDelta );
+        \app\models\Influence::clearData();
+        // $res = \app\models\Influence::generateData( $locations, $snapshots, $snapshotsDelta );
+        $res = \app\models\Influence::generateDataFile( $locations, $snapshots, $snapshotsDelta );
         
         return $this->render('filldata', [ 'res' => $res ]);
     }

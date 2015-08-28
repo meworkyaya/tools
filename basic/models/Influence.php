@@ -38,8 +38,6 @@ class Influence extends Model
         
         for( $i = 1; $i <= $locations; $i++ ){
             
-            //$stringDat = "INSERT INTO "
-            
             $location = new \app\models\InLocations();
             $location->save();
             
@@ -58,6 +56,122 @@ class Influence extends Model
         
         return $res;
     }
+
+
+    
+    /**
+    * gnerate data files
+    * 
+    * @param mixed $locations
+    * @param mixed $snapshots
+    * @param mixed $snapshotsDelta
+    */
+    public static function generateDataFile( $locations, $snapshots, $snapshotsDelta ){
+        $res = [];
+        $res['start'] = time();
+        
+        self::generateLocationsDataFile( $locations, $snapshots, $snapshotsDelta );
+        self::generateSnapshotsDataFile( $locations, $snapshots, $snapshotsDelta );
+
+        $res['end'] = time();
+        $res['delta'] = $res['end'] - $res['start'];
+        
+        
+        return $res;
+    }
+
+    
+    
+    /**
+    * generate data by creating file
+    * 
+    */
+    public static function generateLocationsDataFile( $locations, $snapshots, $snapshotsDelta ){
+        $file = 'data_locations.txt';
+        
+//        $sql = "INSERT INTO `in_locations` VALUES\n";
+//        for( $i = 1; $i < $locations; $i++ ){            
+//            $sql .= "({$i}, 0, 0),\n";
+//        }
+//        $sql .= "({$i}, 0, 0);\n";
+        
+        
+        $sql = "";
+        for( $i = 1; $i < $locations; $i++ ){            
+            $sql .= "{$i}\t0\t0\n";
+        }
+        
+        file_put_contents( $file, $sql );
+        
+        return;
+    }
+    
+
+    
+    /**
+    * generate data by creating file
+    * 
+    */
+    public static function generateSnapshotsDataFile( $locations, $snapshots, $snapshotsDelta ){
+        $file = 'data_snapshots.txt';
+
+        $viewsMax = 1000;
+        $ratingMax = 6;
+
+        
+        $count = $snapshots + rand( 0, $snapshotsDelta);
+        
+        $begin = new \DateTime( '2015-08-28' );
+        $end = new \DateTime( '2015-08-28' );
+        $end = $end->modify( "-{$count} day" );       
+        
+        $interval = new \DateInterval('P1D');
+        $daterange = new \DatePeriod($end, $interval , $begin);
+
+        
+        $sql = "";
+        for( $i = 0; $i < $locations; $i++ ){     
+            
+            $idCount = $i * $count + 1;
+               
+            foreach($daterange as $date){
+                
+                $idCount++;
+                
+                $dateString = $date->format("Y-m-d");
+                
+                $sql .= "{$idCount}\t{$i}0\t0\n";
+                
+                
+                $snapshot = new \app\models\InSnapshots();
+                $snapshot->location_id = $owner_id;
+                $snapshot->date = $dateString;
+                $snapshot->views = rand( 0,  $viewsMax);
+                $snapshot->rating = rand( 0,  $ratingMax);
+                
+                $snapshot->save();
+                
+                unset( $snapshot );
+                
+            }
+            
+            
+            
+        }
+        
+        
+        
+        
+        
+        
+        file_put_contents( $file, $sql );
+        
+        return;
+    }
+    
+    
+    
+    
     
     
     /**
