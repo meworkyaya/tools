@@ -37,6 +37,14 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Home', 'url' => ['/site/index']],
+            ['label' => 'Influence', 'url' => ['/influence/index'],
+                'items' => [
+                 ['label' => 'Fill data', 'url' => ['/influence/filldata']],
+                 '<li class="divider"></li>',
+                 '<li class="dropdown-header">Clear</li>',
+                 ['label' => 'Clear', 'url' => ['/influence/clear']],
+                 ],
+            ],
             ['label' => 'About', 'url' => ['/site/about']],
             ['label' => 'Contact', 'url' => ['/site/contact']],
             Yii::$app->user->isGuest ?
