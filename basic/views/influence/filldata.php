@@ -5,8 +5,8 @@
 
 <p>Data was cleared</p>
 <p>Result: <?php 
-foreach( $res as $item ){
-    echo "{$item}<br>";
+foreach( $res as $key => $item ){
+    echo "{$key}: {$item}<br>";
 }
  ?></p>
 

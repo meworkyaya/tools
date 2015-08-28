@@ -32,15 +32,22 @@ class Influence extends Model
     public static function generateData( $locations, $snapshots, $snapshotsDelta ){
         
         $res = [];
+        $res['start'] = time();
         
-        for( $i = 1; $i < $locations; $i++ ){
+        for( $i = 1; $i <= $locations; $i++ ){
             $location = new \app\models\InLocations();
             $location->save();
             
             $id = $location->id;
             
-            $res += self::generateSnapshots( $id, $snapshots, $snapshotsDelta );
+            $subres = self::generateSnapshots( $id, $snapshots, $snapshotsDelta );
+            $res = array_merge( $res, $subres );
+            // $res['items'] = array_merge( $res, self::generateSnapshots( $id, $snapshots, $snapshotsDelta ) );
         }
+
+        $res['end'] = time();
+        $res['delta'] = $res['end'] - $res['start'];
+        
         
         return $res;
     }
@@ -56,7 +63,7 @@ class Influence extends Model
     public static function generateSnapshots( $owner_id, $snapshots, $snapshotsDelta ){
         
         $viewsMax = 1000;
-        $ratingMax = 5;
+        $ratingMax = 6;
         
         $count = $snapshots + rand( 0, $snapshotsDelta);
         
@@ -68,9 +75,21 @@ class Influence extends Model
         $daterange = new \DatePeriod($end, $interval , $begin);
 
         $res = [];
+        $res[ $owner_id ] = 0;
+        
         foreach($daterange as $date){
-            // $dateString =             
-            $res[] = $date->format("Y-m-d");
+            $dateString = $date->format("Y-m-d");
+            
+            $res[ $owner_id ] += 1;
+            
+            $snapshot = new \app\models\InSnapshots();
+            $snapshot->location_id = $owner_id;
+            $snapshot->date = $dateString;
+            $snapshot->views = rand( 0,  $viewsMax);
+            $snapshot->rating = rand( 0,  $ratingMax);
+            
+            $snapshot->save();
+            
         }
         
         return $res;
