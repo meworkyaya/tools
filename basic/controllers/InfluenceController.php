@@ -23,10 +23,14 @@ class InfluenceController extends \yii\web\Controller
     */
     public function actionFilldata()
     {
-        \app\models\Influence::clearData();
-        \app\models\Influence::generateData( 10, 10, 1);
+        $locations = 10;
+        $snapshots = 10;
+        $snapshotsDelta = 2;
         
-        return $this->render('filldata');
+        \app\models\Influence::clearData();
+        $res = \app\models\Influence::generateData( $locations, $snapshots, $snapshotsDelta );
+        
+        return $this->render('filldata', [ 'res' => $res ]);
     }
 
     

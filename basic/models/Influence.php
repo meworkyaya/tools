@@ -31,14 +31,18 @@ class Influence extends Model
     */
     public static function generateData( $locations, $snapshots, $snapshotsDelta ){
         
+        $res = [];
+        
         for( $i = 1; $i < $locations; $i++ ){
             $location = new \app\models\InLocations();
             $location->save();
             
             $id = $location->id;
+            
+            $res += self::generateSnapshots( $id, $snapshots, $snapshotsDelta );
         }
         
-        return;
+        return $res;
     }
     
     
@@ -56,19 +60,20 @@ class Influence extends Model
         
         $count = $snapshots + rand( 0, $snapshotsDelta);
         
-        $begin = new DateTime( '2015-08-28' );
+        $begin = new \DateTime( '2015-08-28' );
+        $end = new \DateTime( '2015-08-28' );
         $end = $end->modify( "-{$count} day" );       
         
-        $interval = new DateInterval('P1D');
-        $daterange = new DatePeriod($begin, $interval ,$end);
+        $interval = new \DateInterval('P1D');
+        $daterange = new \DatePeriod($end, $interval , $begin);
 
+        $res = [];
         foreach($daterange as $date){
             // $dateString =             
-            echo $date->format("Ymd") . "<br>";
+            $res[] = $date->format("Y-m-d");
         }
-        exit();
         
-        
+        return $res;
 //        for( $i = 1; $i < $snapshots + rand( 0, $snapshotsDelta); $i++ ){
 //            $snapshot = new \app\models\InSnapshots();
 //            
