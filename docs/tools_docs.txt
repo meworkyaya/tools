@@ -24,8 +24,20 @@ update in_locations set total_week = ( select Sum(views) as sumv from in_snapsho
 
 
 update in_locations set total_week = ( select Sum(views) as sumv from in_snapshots where location_id = in_locations.id and  date > '2015-08-14' AND date < '2015-08-22' group by location_id )
+	7 days
 	9999 rows affected. (Query took 0.9835 sec)
 	9990 rows affected. (Query took 0.9262 sec)
+	
+	30 days:
+	9999 rows affected. (Query took 1.1031 sec)
+	
+	
+	
+update in_locations set total_week = ( select Sum(views) as sumv from in_snapshots where location_id = in_locations.id and  date > '2015-08-14' AND date < '2015-08-22' group by location_id ),
+total_month = ( select Sum(views) as sumv from in_snapshots where location_id = in_locations.id and  date > '2015-07-22' AND date < '2015-08-22' group by location_id )
+	9999 rows affected. (Query took 1.8130 sec)
+	
+	
 	
 update in_locations set total_week = 0
 	
