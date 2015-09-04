@@ -9,7 +9,11 @@ use yii\base\Model;
  * LoginForm is the model behind the login form.
  */
 class Influence extends Model
-{
+{    
+    
+    protected static $dataDir = '../../data/';
+    protected static $dataFileLocations = 'data_locations.txt';
+    protected static $dataFileSnapshots = 'data_snapshots.txt';
     
     /**
     * clear data at table
@@ -31,7 +35,7 @@ class Influence extends Model
     */
     public static function generateData( $locations, $snapshots, $snapshotsDelta ){
         
-        $file = 'data.txt';
+        $file = self::$dataDir . self::$dataFileSnapshots;
         
         $res = [];
         $res['start'] = time();
@@ -70,7 +74,7 @@ class Influence extends Model
         $res = [];
         $res['start'] = time();
         
-        self::generateLocationsDataFile( $locations, $snapshots, $snapshotsDelta );
+        // self::generateLocationsDataFile( $locations, $snapshots, $snapshotsDelta );
         self::generateSnapshotsDataFile( $locations, $snapshots, $snapshotsDelta );
 
         $res['end'] = time();
@@ -87,7 +91,7 @@ class Influence extends Model
     * 
     */
     public static function generateLocationsDataFile( $locations, $snapshots, $snapshotsDelta ){
-        $file = 'data_locations.txt';
+        $file = self::$dataDir . self::$dataFileLocations;
         
 //        $sql = "INSERT INTO `in_locations` VALUES\n";
 //        for( $i = 1; $i < $locations; $i++ ){            
@@ -97,11 +101,13 @@ class Influence extends Model
         
         
         $sql = "";
-        for( $i = 1; $i < $locations; $i++ ){            
-            $sql .= "{$i}\t0\t0\n";
-        }
         
-        file_put_contents( $file, $sql );
+        file_put_contents( $file, "" ); // clear file        
+        for( $i = 1; $i < $locations; $i++ ){            
+            $sql = "{$i}\t0\t0\n";
+            
+            file_put_contents( $file, $sql, FILE_APPEND );
+        }
         
         return;
     }
@@ -113,7 +119,7 @@ class Influence extends Model
     * 
     */
     public static function generateSnapshotsDataFile( $locations, $snapshots, $snapshotsDelta ){
-        $file = 'data_snapshots.txt';
+        $file = self::$dataDir . self::$dataFileSnapshots;
 
         $viewsMax = 1000;
         $ratingMax = 6;
@@ -130,41 +136,25 @@ class Influence extends Model
 
         
         $sql = "";
+        
+        $views = 567;
+        $rating = 3;
+        
+        file_put_contents( $file, "" );
+        
         for( $i = 0; $i < $locations; $i++ ){     
             
             $idCount = $i * $count + 1;
                
             foreach($daterange as $date){
                 
-                $idCount++;
+                $idCount++;                
+                $dateString = $date->format("Y-m-d");                
+                $sql = "{$idCount}\t{$i}\t{$dateString}\t{$views}\t{$rating}\n";
                 
-                $dateString = $date->format("Y-m-d");
-                
-                $sql .= "{$idCount}\t{$i}0\t0\n";
-                
-                
-                $snapshot = new \app\models\InSnapshots();
-                $snapshot->location_id = $owner_id;
-                $snapshot->date = $dateString;
-                $snapshot->views = rand( 0,  $viewsMax);
-                $snapshot->rating = rand( 0,  $ratingMax);
-                
-                $snapshot->save();
-                
-                unset( $snapshot );
-                
+                file_put_contents( $file, $sql, FILE_APPEND );
             }
-            
-            
-            
         }
-        
-        
-        
-        
-        
-        
-        file_put_contents( $file, $sql );
         
         return;
     }
