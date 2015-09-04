@@ -1,0 +1,33 @@
+разные утилиты собранные в одном фреймворке
+
+
+influence sql
+======================
+
+load data infile "C:/_work/_projects/tools/site/data/data_locations.txt" INTO TABLE in_locations
+
+load data infile "C:/_work/_projects/tools/site/data/data_snapshots.txt" INTO TABLE in_snapshots
+
+select * from in_snapshots where location_id = 1
+
+select Sum(views) as sumv from in_snapshots where location_id = 1 group by location_id
+
+select location_id, Sum(views) as sumv from in_snapshots group by location_id
+
+select * from in_snapshots where location_id = 1 and date > '2015-08-14' AND date < '2015-08-22'
+
+select location_id, Sum(views) as sumv from in_snapshots where date > '2015-08-14' AND date < '2015-08-22' group by location_id
+  Showing rows 0 - 29 (10000 total, Query took 0.0028 sec)
+  
+update in_locations set total_week = ( select Sum(views) as sumv from in_snapshots where location_id = in_locations.id and location date > '2015-08-14' AND date < '2015-08-22' group by location_id )
+update in_locations set total_week = ( select Sum(views) as sumv from in_snapshots where location_id = 1 and  date > '2015-08-14' AND date < '2015-08-22' group by location_id )
+
+
+update in_locations set total_week = ( select Sum(views) as sumv from in_snapshots where location_id = in_locations.id and  date > '2015-08-14' AND date < '2015-08-22' group by location_id )
+	9999 rows affected. (Query took 0.9835 sec)
+	9990 rows affected. (Query took 0.9262 sec)
+	
+update in_locations set total_week = 0
+	
+	
+SET GLOBAL query_cache_size = 0;	
