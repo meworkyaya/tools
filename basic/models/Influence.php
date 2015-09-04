@@ -74,7 +74,7 @@ class Influence extends Model
         $res = [];
         $res['start'] = time();
         
-        // self::generateLocationsDataFile( $locations, $snapshots, $snapshotsDelta );
+        self::generateLocationsDataFile( $locations, $snapshots, $snapshotsDelta );
         self::generateSnapshotsDataFile( $locations, $snapshots, $snapshotsDelta );
 
         $res['end'] = time();

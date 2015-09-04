@@ -27,10 +27,10 @@ class InfluenceController extends \yii\web\Controller
     {
         set_time_limit( 0 );
         
-        // $locations = 100 * 1000;
-        $locations = 10;
+        $locations = 10 * 1000;
+        // $locations = 10000;
         
-        $snapshots = 4;
+        $snapshots = 31;
         $snapshotsDelta = 2;
         
         \app\models\Influence::clearData();
